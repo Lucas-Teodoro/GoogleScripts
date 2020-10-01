@@ -147,16 +147,17 @@ function limitar(){
   var ativa, aux
   var email = []
   var intervalos = []
+  var aux = ss.getSheetByName("Aux").getRange("G3:G52").getValues();
+  var aux1 = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
   for (i = 0; i < 50; i++){
-    var aux = ss.getSheetByName("Aux").getRange("G"+(i+3)).getValue();
-    if(aux != ""){
-      intervalos.push(aux);
+    if(aux[i] != ""){
+      intervalos.push(aux[i]);
     }
-    var aux1 = ss.getSheetByName("Aux").getRange("E"+(i+3)).getValue();
-    if(aux1 != ""){
-      email.push(aux1);
+    if(aux1[i] != ""){
+      email.push(aux1[i]);
     }
   }
+
 //  for (var i = 0; i < 5; i++){
   for (var i = 0; i < sheets.length; i++){
     ativa = ss.getSheetByName(sheets[i].getName());
