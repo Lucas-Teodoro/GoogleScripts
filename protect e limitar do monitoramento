@@ -1,0 +1,195 @@
+function onOpen() {
+  SpreadsheetApp.getUi() // Or DocumentApp or SlidesApp or FormApp.
+      .createMenu('Menu de Funções')
+      .addItem('Proteger', 'exeProteger')
+      .addItem('Remover Proteções', 'removerProtecoes')
+      .addItem('Inserir Coluna Kits','inserir')
+      .addToUi();
+}
+
+function exeProteger(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+//CRIA ARRAY DOS INTERVALOS A SEREM LIBERADOS -- DETERMINAR TODOS OS INTERVALOS ;
+  var email = []
+  var intervalos = []
+  var professores = []
+  for (i = 0; i < 50; i++){
+    var aux = ss.getSheetByName("Aux").getRange("E"+(i+3)).getValue();
+    var aux2 = ss.getSheetByName("Aux").getRange("F"+(i+3)).getValue();
+    var aux3 = ss.getSheetByName("Aux").getRange("G"+(i+3)).getValue();
+    if (aux != ""){
+      email.push(aux);
+    }
+    if(aux2 != ""){
+      professores.push(aux2);
+    }
+    if(aux3 != ""){
+      intervalos.push(aux3);
+    }
+  }
+//EXECUTA FUNÇÃO DE PROTEÇÃO
+  proteger(email,intervalos,professores);
+  limitar();
+  Browser.msgBox("Aviso","Proteções Ativadas",Browser.Buttons.OK);
+}
+
+function proteger(email, intervalos, professores){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  var ativa, auxi
+//  for (var i = 0; i < 5; i++){
+  for (var i = 0; i < sheets.length; i++){
+    ativa = ss.getSheetByName(sheets[i].getName());
+    switch (sheets[i].getName()) {
+      case "Aux":
+        auxi = ativa.protect().setDescription("Células Protegidas");
+        break;
+      case "GERAL":
+        auxi = ativa.protect().setDescription("Células Protegidas");
+        break;
+      case "Escola":
+        auxi = ativa.protect().setDescription("Células Protegidas");
+        break;
+      default:
+        var unprotected = []
+        for (var j = 0; j < intervalos.length; j++) {
+          auxi = ativa.protect().setDescription("Células Protegidas");
+          unprotected.push(ativa.getRange(intervalos[j]));
+        }
+        auxi.setUnprotectedRanges(unprotected);          
+        break;
+    }
+    auxi.addEditors(email);
+    auxi.removeEditors(professores);
+  }
+}
+
+function removerProtecoes(){
+var ss = SpreadsheetApp.getActiveSpreadsheet();
+var sheets = ss.getSheets();
+var ativa
+for (var i = 0; i < sheets.length; i++) {
+  ativa = ss.getSheetByName(sheets[i].getName());
+  ativa.protect().remove();
+  }
+  Browser.msgBox("Aviso","Proteções Desativadas",Browser.Buttons.OK);
+}
+
+function inserir(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  var ativa // turma ativa
+  for (var i = 0; i < sheets.length; i++){
+    if (ss.getSheetByName(sheets[i].getName()).getRange("Q8").getValue() == "Kit Al."){}else{
+    if (sheets[i].getName() != "Aux"){
+      if(sheets[i].getName() != "Escola"){
+        if(sheets[i].getName() != "GERAL"){
+          ativa = ss.getSheetByName(sheets[i].getName());
+          ativa.insertColumnBefore(17); // insere coluna q
+          ativa.getRange("Q8").setValue("Kit Al."); // insere valor na coluna q
+          ativa.autoResizeColumn(17);
+          ativa.getRange("Q9").setFormula('=IMPORTRANGE(Aux!B60;"1A!BG9:BG45")'); // insere a formula na coluna q
+          ativa.insertRows(44,13);
+          ativa.getRange("A43").setValue("35");
+          ativa.getRange("A44").setValue("36");
+          ativa.getRange("A45").setValue("37");
+          ativa.getRange("A46").setValue("38");
+          ativa.getRange("A47").setValue("39");
+          ativa.getRange("A48").setValue("40");
+          ativa.getRange("A49").setValue("41");
+          ativa.getRange("A50").setValue("42");
+          ativa.getRange("A51").setValue("43");
+          ativa.getRange("A52").setValue("44");
+          ativa.getRange("A53").setValue("45");
+          ativa.getRange("A54").setValue("46");
+          ativa.getRange("A55").setValue("47");
+          ativa.getRange("A56").setValue("48");
+          ativa.getRange("A57").setValue("49");
+          ativa.getRange("A58").setValue("50");
+          ativa.getRange("B59").setValue("Totais por Canal de Acesso:");
+          ativa.getRange("B59").setBackground("#e0ffff");
+          ativa.getRange("B60").setValue("Retiraram Atividade SEM INTERAÇÃO");
+          ativa.getRange("B61").setValue("NÃO RETIRARAM Atividade NEM INTERAGIRAM");
+          ativa.getRange("B62").setValue("NÃO RETIRARAM ATIVIDADE MAS INTERAGIRAM");
+          ativa.getRange("B63").setValue("SEM ACESSO DECLARADO");
+          ativa.getRange("B65").setValue("Tem DEVOLUTIVA e PRESENTES (SIM / SIM)");
+          ativa.getRange("B66").setValue("Não tem DEVOLUTIVA E PRESENTES (NÃO / SIM)");
+          ativa.getRange("B67").setValue("Tem DEVOLUTIVA e NÃO PRESENTES (SIM / NÃO)");
+          ativa.getRange("B68").setValue("Não tem DEVOLUTIVA E NÃO PRESENTES (NÃO / NÃO)");
+          ativa.getRange("Q60").setValue("Ind. > ._. NÃO");
+          ativa.getRange("R65").setValue("INTERAÇÃO = DEVOLUTIVA + PRESENÇA");
+          ativa.getRange("P59").setFormula('=CONT.SE($P$9:$P$58; "<>")');
+          ativa.getRange("Q59").setFormula('=SOMA(Q9:Q58)');
+          ativa.getRange("P60").setFormula('=CONT.SES($R$9:$R$58;">0";$BH$9:$BH$58;"=0")');
+          ativa.getRange("P61").setFormula('=CONT.SES($R$9:$R$58;"=0";$BH$9:$BH$58;"=0")');
+          ativa.getRange("Q61").setFormula('=CONT.SE(Q9:Q58;"=0")');
+          ativa.getRange("R61").setFormula('=CONT.SE($R$9:$R$58;"=0")');
+          ativa.getRange("S61").setFormula('=CONT.SE($S$9:$S$58;"=0")');
+          ativa.getRange("T61").setFormula('=CONT.SE($T$9:$T$58;"=0")');
+          ativa.getRange("P62").setFormula('=CONT.SES($R$9:$R$58;"=0";$BH$9:$BH$58;">0")');
+          ativa.getRange("P63").setFormula('=SOMA(P9:P58)');
+          ativa.getRange("P65").setFormula('=CONT.SES($S$9:$S$58;"<>0";$BH$9:$BH$58;"<>0")');
+          ativa.getRange("P66").setFormula('=CONT.SES($S$9:$S$58;"<>0";$BH$9:$BH$58;"=0")');
+          ativa.getRange("P67").setFormula('=CONT.SES($S$9:$S$58;"=0";$BH$9:$BH$58;"<>0")');
+          ativa.getRange("P68").setFormula('=CONT.SES($S$9:$S$58;"=0";$BH$9:$BH$58;"=0")');
+        }
+      }
+    }
+   }
+  }
+}
+
+function limitar(){
+  var ss = SpreadsheetApp.getActive();
+  eliminar();
+  var sheets = ss.getSheets();
+  var qntTurmas = sheets.length - 3;
+  var ativa, aux
+  var email = []
+  var intervalos = []
+  for (i = 0; i < 50; i++){
+    var aux = ss.getSheetByName("Aux").getRange("G"+(i+3)).getValue();
+    if(aux != ""){
+      intervalos.push(aux);
+    }
+    var aux1 = ss.getSheetByName("Aux").getRange("E"+(i+3)).getValue();
+    if(aux1 != ""){
+      email.push(aux1);
+    }
+  }
+//  for (var i = 0; i < 5; i++){
+  for (var i = 0; i < sheets.length; i++){
+    ativa = ss.getSheetByName(sheets[i].getName());
+    for(var j = 0; j < qntTurmas; j++){
+      if(sheets[(i)].getName() == ss.getSheetByName("Escola").getRange("G"+(j+8)).getValue()) {
+        var editores = []
+        for (var k = 0; k < 50; k++){
+          var aux1 = ss.getSheetByName("Escola").getRange((8+j),(k+14)).getValues();
+          if(aux1 != ""){
+            editores.push(aux1);
+          }
+        }
+        for(var k = 0; k < email.length; k++){
+          editores.push(email[k]);
+        }
+        ativa = ss.getSheetByName(sheets[i].getName());
+        for(var k = 0; k < intervalos.length; k++){
+          aux = ativa.getRange(intervalos[k]).protect().setDescription("Células Protegidas");
+          aux.removeEditors(aux.getEditors());
+          aux.addEditors(editores)
+        }
+      }
+    }
+  }
+}
+
+function eliminar(){
+var ss = SpreadsheetApp.getActive();
+var protections = ss.getProtections(SpreadsheetApp.ProtectionType.RANGE);
+for (var i = 0; i < protections.length; i++) {
+  var protection = protections[i];
+  if (protection.canEdit()) {
+    protection.remove();
+  }
+}
+}
