@@ -11,20 +11,20 @@ function exeProteger(){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
 //CRIA ARRAY DOS INTERVALOS A SEREM LIBERADOS -- DETERMINAR TODOS OS INTERVALOS ;
   var email = []
-  var intervalos = []
   var professores = []
+  var intervalos = []
+  var aux = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
+  var aux2 = ss.getSheetByName("Aux").getRange("F3:F52").getValues();
+  var aux3 = ss.getSheetByName("Aux").getRange("G3:G52").getValues();
   for (i = 0; i < 50; i++){
-    var aux = ss.getSheetByName("Aux").getRange("E"+(i+3)).getValue();
-    var aux2 = ss.getSheetByName("Aux").getRange("F"+(i+3)).getValue();
-    var aux3 = ss.getSheetByName("Aux").getRange("G"+(i+3)).getValue();
-    if (aux != ""){
-      email.push(aux);
+    if (aux[i] != ""){
+      email.push(aux[i]);
     }
-    if(aux2 != ""){
-      professores.push(aux2);
+    if(aux2[i] != ""){
+      professores.push(aux2[i]);
     }
-    if(aux3 != ""){
-      intervalos.push(aux3);
+    if(aux3[i] != ""){
+      intervalos.push(aux3[i]);
     }
   }
 //EXECUTA FUNÇÃO DE PROTEÇÃO
