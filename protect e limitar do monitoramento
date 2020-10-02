@@ -42,11 +42,7 @@ function proteger(email, intervalos, professores){
     ativa = ss.getSheetByName(sheets[i].getName());
     switch (sheets[i].getName()) {
       case "Aux":
-        auxi = ativa.protect().setDescription("Células Protegidas");
-        break;
       case "GERAL":
-        auxi = ativa.protect().setDescription("Células Protegidas");
-        break;
       case "Escola":
         auxi = ativa.protect().setDescription("Células Protegidas");
         break;
@@ -80,10 +76,13 @@ function inserir(){
   var sheets = ss.getSheets();
   var ativa // turma ativa
   for (var i = 0; i < sheets.length; i++){
-    if (ss.getSheetByName(sheets[i].getName()).getRange("Q8").getValue() == "Kit Al."){}else{
-    if (sheets[i].getName() != "Aux"){
-      if(sheets[i].getName() != "Escola"){
-        if(sheets[i].getName() != "GERAL"){
+    switch(sheets[i].getName()) {
+      case "Aux":
+      case "Escola":
+      case "GERAL":
+        break;
+      default:
+        if (ss.getSheetByName(sheets[i].getName()).getRange("Q8").getValue() == "Kit Al."){}else{
           ativa = ss.getSheetByName(sheets[i].getName());
           ativa.insertColumnBefore(17); // insere coluna q
           ativa.getRange("Q8").setValue("Kit Al."); // insere valor na coluna q
@@ -132,18 +131,16 @@ function inserir(){
           ativa.getRange("P66").setFormula('=CONT.SES($S$9:$S$58;"<>0";$BH$9:$BH$58;"=0")');
           ativa.getRange("P67").setFormula('=CONT.SES($S$9:$S$58;"=0";$BH$9:$BH$58;"<>0")');
           ativa.getRange("P68").setFormula('=CONT.SES($S$9:$S$58;"=0";$BH$9:$BH$58;"=0")');
-        }
       }
+      break;
     }
-   }
   }
 }
 
 function limitar(){
-  var ss = SpreadsheetApp.getActive();
   eliminar();
+  var ss = SpreadsheetApp.getActive();
   var sheets = ss.getSheets();
-  var qntTurmas = sheets.length - 3;
   var ativa, aux
   var email = []
   var intervalos = []
@@ -157,21 +154,18 @@ function limitar(){
       email.push(aux1[i]);
     }
   }
-
-//  for (var i = 0; i < 5; i++){
   for (var i = 0; i < sheets.length; i++){
+    // Procurar por aba
     ativa = ss.getSheetByName(sheets[i].getName());
-    for(var j = 0; j < qntTurmas; j++){
+    for(var j = 0; j < (sheets.length - 3); j++){
       if(sheets[(i)].getName() == ss.getSheetByName("Escola").getRange("G"+(j+8)).getValue()) {
         var editores = []
         for (var k = 0; k < 50; k++){
+          if (k < email.length){editores.push(email[k]);} //insere o email dos editores a relação geral
           var aux1 = ss.getSheetByName("Escola").getRange((8+j),(k+14)).getValues();
           if(aux1 != ""){
             editores.push(aux1);
           }
-        }
-        for(var k = 0; k < email.length; k++){
-          editores.push(email[k]);
         }
         ativa = ss.getSheetByName(sheets[i].getName());
         for(var k = 0; k < intervalos.length; k++){
@@ -185,12 +179,12 @@ function limitar(){
 }
 
 function eliminar(){
-var ss = SpreadsheetApp.getActive();
-var protections = ss.getProtections(SpreadsheetApp.ProtectionType.RANGE);
-for (var i = 0; i < protections.length; i++) {
-  var protection = protections[i];
-  if (protection.canEdit()) {
-    protection.remove();
+  var ss = SpreadsheetApp.getActive();
+  var protections = ss.getProtections(SpreadsheetApp.ProtectionType.RANGE);
+  for (var i = 0; i < protections.length; i++) {
+    var protection = protections[i];
+    if (protection.canEdit()) {
+      protection.remove();
+    }
   }
-}
 }
