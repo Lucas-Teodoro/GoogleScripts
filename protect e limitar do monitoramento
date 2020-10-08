@@ -4,6 +4,7 @@ function onOpen() {
       .addItem('Proteger', 'exeProteger')
       .addItem('Remover Proteções', 'removerProtecoes')
       .addItem('Inserir Coluna Kits','inserir')
+      .addItem('Inserir Formulas','inserirFormulas')
       .addToUi();
 }
 
@@ -117,20 +118,7 @@ function inserir(){
           ativa.getRange("B68").setValue("Não tem DEVOLUTIVA E NÃO PRESENTES (NÃO / NÃO)");
           ativa.getRange("Q60").setValue("Ind. > ._. NÃO");
           ativa.getRange("R65").setValue("INTERAÇÃO = DEVOLUTIVA + PRESENÇA");
-          ativa.getRange("P59").setFormula('=CONT.SE($P$9:$P$58; "<>")');
-          ativa.getRange("Q59").setFormula('=SOMA(Q9:Q58)');
-          ativa.getRange("P60").setFormula('=CONT.SES($R$9:$R$58;">0";$BH$9:$BH$58;"=0")');
-          ativa.getRange("P61").setFormula('=CONT.SES($R$9:$R$58;"=0";$BH$9:$BH$58;"=0")');
-          ativa.getRange("Q61").setFormula('=CONT.SE(Q9:Q58;"=0")');
-          ativa.getRange("R61").setFormula('=CONT.SE($R$9:$R$58;"=0")');
-          ativa.getRange("S61").setFormula('=CONT.SE($S$9:$S$58;"=0")');
-          ativa.getRange("T61").setFormula('=CONT.SE($T$9:$T$58;"=0")');
-          ativa.getRange("P62").setFormula('=CONT.SES($R$9:$R$58;"=0";$BH$9:$BH$58;">0")');
-          ativa.getRange("P63").setFormula('=SOMA(P9:P58)');
-          ativa.getRange("P65").setFormula('=CONT.SES($S$9:$S$58;"<>0";$BH$9:$BH$58;"<>0")');
-          ativa.getRange("P66").setFormula('=CONT.SES($S$9:$S$58;"<>0";$BH$9:$BH$58;"=0")');
-          ativa.getRange("P67").setFormula('=CONT.SES($S$9:$S$58;"=0";$BH$9:$BH$58;"<>0")');
-          ativa.getRange("P68").setFormula('=CONT.SES($S$9:$S$58;"=0";$BH$9:$BH$58;"=0")');
+ 
       }
       break;
     }
@@ -188,3 +176,39 @@ function eliminar(){
     }
   }
 }
+
+function inserirFormulas(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  var ativa // turma ativa
+  for (var i = 0; i < sheets.length; i++){
+    switch(sheets[i].getName()) {
+      case "Aux":
+      case "Escola":
+      case "GERAL":
+        break;
+      default:
+        ativa = ss.getSheetByName(sheets[i].getName());
+        ativa.getRange("P59").setFormula('=COUNTIF($P$9:$P$58; "<>")');
+        ativa.getRange("Q59").setFormula('=SUM($Q$9:$Q$58)');
+        ativa.getRange("P60").setFormula('=COUNTIFS($R9:$R$58;">0";$BH$9:$BH$58;"=0")');
+        ativa.getRange("P61").setFormula('=COUNTIFS($R$9:$R$58;"=0";$BH$9:$BH$58;"=0")');
+        ativa.getRange("Q61").setFormula('=COUNTIF(Q9:Q58;"=0")');
+        ativa.getRange("R61").setFormula('=COUNTIF($R$9:$R$58;"=0")');
+        ativa.getRange("S61").setFormula('=COUNTIF($S$9:$S$58;"=0")');
+        ativa.getRange("T61").setFormula('=COUNTIF($T$9:$T$58;"=0")');
+        ativa.getRange("P62").setFormula('=COUNTIFS($R$9:$R$58;"=0";$BH$9:$BH$58;">0")');
+        ativa.getRange("P63").setFormula('=SUM(P9:P58)');
+        ativa.getRange("P65").setFormula('=COUNTIFS($S$9:$S$58;"<>0";$BH$9:$BH$58;"<>0")');
+        ativa.getRange("P66").setFormula('=COUNTIFS($S$9:$S$58;"<>0";$BH$9:$BH$58;"=0")');
+        ativa.getRange("P67").setFormula('=COUNTIFS($S$9:$S$58;"=0";$BH$9:$BH$58;"<>0")');
+        ativa.getRange("P68").setFormula('=COUNTIFS($S$9:$S$58;"=0";$BH$9:$BH$58;"=0")');
+        ativa.getRange("BI7").setFormula('=MAX(COUNTIF(AC62:BG62;"<>0");COUNTIF(AC61:BG61;"<>0"))'); // Dias Letivos
+        ativa.getRange("BJ60").setFormula('=SUM(AC61:BG61)/SUM(AC61:BG62)'); // Frequencia Mês
+        ativa.getRange("BK60").setFormula('=SUM(AC61:BG61)/MAX(COUNTIF(AC62:BG62;"<>0");COUNTIF(AC61:BG61;"<>0"))'); // Media Freq Dia
+        ativa.getRange("BL60").setFormula('=SUM(AC62:BG62)/SUM(AC61:BG62)'); // Faltas Mês
+      break;
+    }
+  }
+}
+
