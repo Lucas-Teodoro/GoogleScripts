@@ -211,4 +211,27 @@ function inserirFormulas(){
     }
   }
 }
-
+function inserirFormulas2(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  var ativa // turma ativa
+  for (var i = 0; i < sheets.length; i++){
+    switch(sheets[i].getName()) {
+      case "Aux":
+      case "Escola":
+      case "GERAL":
+        break;
+      default:
+        ativa = ss.getSheetByName(sheets[i].getName());
+        for(var j=0;j<50;j++){
+          ativa.getRange("A"+(j+9)).setValue(1+j);
+          ativa.getRange("T"+(j+9)).setFormula('=BH'+(j+9)+'+S'+(j+9));
+          ativa.getRange("BH"+(j+9)).setFormula('=COUNTIF(AC'+(j+9)+':BG'+(j+9)+';"P")');
+          ativa.getRange("BI"+(j+9)).setFormula('=COUNTIF(AC'+(j+9)+':BG'+(j+9)+';"F")');
+          ativa.getRange("BJ"+(j+9)).setFormula('=IFERROR(BH'+(j+9)+'/$BI$7;0)');
+          ativa.getRange("BK"+(j+9)).setFormula('=IFERROR(BI'+(j+9)+'/$BI$7;0)');
+        }
+        break;
+    }
+  }
+}
