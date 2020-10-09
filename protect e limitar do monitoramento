@@ -159,7 +159,6 @@ function eliminar(){
     }
   }
 }
-
 function inserirFormulas(){
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
@@ -190,22 +189,6 @@ function inserirFormulas(){
         ativa.getRange("BJ60").setFormula('=SUM(AC61:BG61)/SUM(AC61:BG62)'); // Frequencia Mês
         ativa.getRange("BK60").setFormula('=SUM(AC61:BG61)/MAX(COUNTIF(AC62:BG62;"<>0");COUNTIF(AC61:BG61;"<>0"))'); // Media Freq Dia
         ativa.getRange("BL60").setFormula('=SUM(AC62:BG62)/SUM(AC61:BG62)'); // Faltas Mês
-      break;
-    }
-  }
-}
-function inserirFormulas2(){
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheets = ss.getSheets();
-  var ativa // turma ativa
-  for (var i = 0; i < sheets.length; i++){
-    switch(sheets[i].getName()) {
-      case "Aux":
-      case "Escola":
-      case "GERAL":
-        break;
-      default:
-        ativa = ss.getSheetByName(sheets[i].getName());
         for(var j=0;j<50;j++){
           ativa.getRange("A"+(j+9)).setValue(1+j);
           ativa.getRange("T"+(j+9)).setFormula('=BH'+(j+9)+'+S'+(j+9));
