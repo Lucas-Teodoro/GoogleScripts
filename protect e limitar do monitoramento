@@ -90,22 +90,6 @@ function inserir(){
           ativa.autoResizeColumn(17);
           ativa.getRange("Q9").setFormula('=IMPORTRANGE(Aux!B60;"1A!BG9:BG45")'); // insere a formula na coluna q
           ativa.insertRows(44,13);
-          ativa.getRange("A43").setValue("35");
-          ativa.getRange("A44").setValue("36");
-          ativa.getRange("A45").setValue("37");
-          ativa.getRange("A46").setValue("38");
-          ativa.getRange("A47").setValue("39");
-          ativa.getRange("A48").setValue("40");
-          ativa.getRange("A49").setValue("41");
-          ativa.getRange("A50").setValue("42");
-          ativa.getRange("A51").setValue("43");
-          ativa.getRange("A52").setValue("44");
-          ativa.getRange("A53").setValue("45");
-          ativa.getRange("A54").setValue("46");
-          ativa.getRange("A55").setValue("47");
-          ativa.getRange("A56").setValue("48");
-          ativa.getRange("A57").setValue("49");
-          ativa.getRange("A58").setValue("50");
           ativa.getRange("B59").setValue("Totais por Canal de Acesso:");
           ativa.getRange("B59").setBackground("#e0ffff");
           ativa.getRange("B60").setValue("Retiraram Atividade SEM INTERAÇÃO");
@@ -118,7 +102,6 @@ function inserir(){
           ativa.getRange("B68").setValue("Não tem DEVOLUTIVA E NÃO PRESENTES (NÃO / NÃO)");
           ativa.getRange("Q60").setValue("Ind. > ._. NÃO");
           ativa.getRange("R65").setValue("INTERAÇÃO = DEVOLUTIVA + PRESENÇA");
- 
       }
       break;
     }
