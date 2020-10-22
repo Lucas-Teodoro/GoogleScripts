@@ -76,8 +76,8 @@ function inserir(){
       case "GERAL":
         break;
       default:
+        ativa = ss.getSheetByName(sheets[i].getName());
         if (ss.getSheetByName(sheets[i].getName()).getRange("Q8").getValue() == "Kit Al."){}else{
-          ativa = ss.getSheetByName(sheets[i].getName());
           ativa.insertColumnBefore(17); // insere coluna q
           ativa.getRange("Q8").setValue("Kit Al."); // insere valor na coluna q
           ativa.autoResizeColumn(17);
@@ -94,7 +94,6 @@ function inserir(){
           ativa.getRange("Q60").setValue("Ind. > ._. NÃO");
           ativa.getRange("R65").setValue("INTERAÇÃO = DEVOLUTIVA + PRESENÇA");
         }
-        ativa = ss.getSheetByName(sheets[i].getName());
         ativa.getRange("Q9").setFormula('=IMPORTRANGE(Aux!B60;"'+sheets[i].getName()+'!BG9:BG45")'); // insere a formula na coluna q
         ativa.getRange("R9").setFormula('=IMPORTRANGE(Aux!B60;"'+sheets[i].getName()+'!BH9:BH45")'); // insere a formula na coluna r        
         ativa.getRange("P59").setFormula('=COUNTIF($P$9:$P$58; "<>")');
@@ -167,3 +166,46 @@ function eliminar(){
       protection.remove();
 }}}
 
+function hora(){
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  var ativa // turma ativa
+  for (var i = 0; i < sheets.length; i++){
+    switch(sheets[i].getName()) {
+      case "Aux":
+      case "Escola":
+      case "GERAL":
+        break;
+      default:
+        ativa = ss.getSheetByName(sheets[i].getName());
+        ativa.getRange("Q9").setFormula('=IMPORTRANGE(Aux!B60;"'+sheets[i].getName()+'!BG9:BG45")'); // insere a formula na coluna q
+        ativa.getRange("R9").setFormula('=IMPORTRANGE(Aux!B60;"'+sheets[i].getName()+'!BH9:BH45")'); // insere a formula na coluna r        
+        ativa.getRange("P59").setFormula('=COUNTIF($P$9:$P$58; "<>")');
+        ativa.getRange("Q59").setFormula('=SUM($Q$9:$Q$58)');
+        ativa.getRange("P60").setFormula('=COUNTIFS($R9:$R$58;">0";$BH$9:$BH$58;"=0")');
+        ativa.getRange("P61").setFormula('=COUNTIFS($R$9:$R$58;"=0";$BH$9:$BH$58;"=0")');
+        ativa.getRange("Q61").setFormula('=COUNTIF(Q9:Q58;"=0")');
+        ativa.getRange("R61").setFormula('=COUNTIF($R$9:$R$58;"=0")');
+        ativa.getRange("S61").setFormula('=COUNTIF($S$9:$S$58;"=0")');
+        ativa.getRange("T61").setFormula('=COUNTIF($T$9:$T$58;"=0")');
+        ativa.getRange("P62").setFormula('=COUNTIFS($R$9:$R$58;"=0";$BH$9:$BH$58;">0")');
+        ativa.getRange("P63").setFormula('=SUM(P9:P58)');
+        ativa.getRange("P65").setFormula('=COUNTIFS($S$9:$S$58;"<>0";$BH$9:$BH$58;"<>0")');
+        ativa.getRange("P66").setFormula('=COUNTIFS($S$9:$S$58;"<>0";$BH$9:$BH$58;"=0")');
+        ativa.getRange("P67").setFormula('=COUNTIFS($S$9:$S$58;"=0";$BH$9:$BH$58;"<>0")');
+        ativa.getRange("P68").setFormula('=COUNTIFS($S$9:$S$58;"=0";$BH$9:$BH$58;"=0")');
+        ativa.getRange("BI7").setFormula('=MAX(COUNTIF(AC62:BG62;"<>0");COUNTIF(AC61:BG61;"<>0"))'); // Dias Letivos
+        ativa.getRange("BJ60").setFormula('=SUM(AC61:BG61)/SUM(AC61:BG62)'); // Frequencia Mês
+        ativa.getRange("BK60").setFormula('=SUM(AC61:BG61)/MAX(COUNTIF(AC62:BG62;"<>0");COUNTIF(AC61:BG61;"<>0"))'); // Media Freq Dia
+        ativa.getRange("BL60").setFormula('=SUM(AC62:BG62)/SUM(AC61:BG62)'); // Faltas Mês
+        // Formulas linha a linha
+        for(var j=0;j<50;j++){
+          ativa.getRange("A"+(j+9)).setValue(1+j);
+          ativa.getRange("T"+(j+9)).setFormula('=BH'+(j+9)+'+S'+(j+9));
+          ativa.getRange("BH"+(j+9)).setFormula('=COUNTIF(AC'+(j+9)+':BG'+(j+9)+';"P")');
+          ativa.getRange("BI"+(j+9)).setFormula('=COUNTIF(AC'+(j+9)+':BG'+(j+9)+';"F")');
+          ativa.getRange("BJ"+(j+9)).setFormula('=IFERROR(BH'+(j+9)+'/$BI$7;0)');
+          ativa.getRange("BK"+(j+9)).setFormula('=IFERROR(BI'+(j+9)+'/$BI$7;0)');
+        }
+        break;
+}}}
