@@ -5,6 +5,7 @@ function onOpen() {
       .addItem('Proteger', 'exeProteger')
       .addItem('Remover Proteções', 'removerProtecoes')
       .addItem('Inserir Coluna Kits','inserir')
+      .addItem('Inserir Formulas','hora')
       .addToUi();
 }
 
