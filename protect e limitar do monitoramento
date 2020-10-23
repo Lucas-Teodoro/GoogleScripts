@@ -210,3 +210,23 @@ function hora(){
         }
         break;
 }}}
+
+function zerar(){ 
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheets = ss.getSheets();
+  var ativa // turma ativa
+//  for (var i = 0; i < sheets.length; i++){
+  for (var i = 0; i < 7; i++){
+   switch(sheets[i].getName()) {
+      case "Aux":
+      case "Escola":
+      case "GERAL":
+        break;
+      default:
+        ativa = ss.getSheetByName(sheets[i].getName());
+        ativa.getRange("P9:P58").setValue(""); // zera a coluna P
+        ativa.getRange("S9:S58").setValue(""); // zera a coluna S
+        ativa.getRange("AC9:BG58").setValue(""); // zera as colunas AC9 a BG58
+        break;}}
+  Browser.msgBox("Planilha zerada com sucesso")
+}
