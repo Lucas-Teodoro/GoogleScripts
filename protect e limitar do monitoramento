@@ -6,6 +6,7 @@ function onOpen() {
       .addItem('Remover Proteções', 'removerProtecoes')
       .addItem('Inserir Coluna Kits','inserir')
       .addItem('Inserir Formulas','hora')
+      .addItem('Zerar Planilha','zerar')  
       .addToUi();
 }
 
@@ -214,8 +215,10 @@ function hora(){
 function zerar(){ 
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheets = ss.getSheets();
+  var resposta = Browser.msgBox('Zerar tabelas','Deseja realmente zerar as tabelas?',Browser.Buttons.YES_NO);
   var ativa // turma ativa
 //  for (var i = 0; i < sheets.length; i++){
+  if(resposta == "yes"){
   for (var i = 0; i < 7; i++){
    switch(sheets[i].getName()) {
       case "Aux":
@@ -227,6 +230,6 @@ function zerar(){
         ativa.getRange("P9:P58").setValue(""); // zera a coluna P
         ativa.getRange("S9:S58").setValue(""); // zera a coluna S
         ativa.getRange("AC9:BG58").setValue(""); // zera as colunas AC9 a BG58
-        break;}}
+       break;}}
   Browser.msgBox("Planilha zerada com sucesso")
-}
+}}
