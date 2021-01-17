@@ -1,0 +1,18 @@
+var idTabela;
+function myFunction() {
+
+  let contacts = ContactsApp.getContacts();
+  Logger.log(contacts)
+  return contacts;
+}
+
+function criarTabela(){
+  idTabela = SpreadsheetApp.create("Telefones").getId();
+  SpreadsheetApp.openById(idTabela).getSheetByName("Página1").setName("contatos");
+}
+
+function preencherTabela(){
+  let planilha = SpreadsheetApp.openById(idTabela);
+  planilha.getSheetByName("contatos").getRange
+
+}
