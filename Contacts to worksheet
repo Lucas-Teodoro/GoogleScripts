@@ -1,18 +1,26 @@
-var idTabela;
-function myFunction() {
-
-  let contacts = ContactsApp.getContacts();
-  Logger.log(contacts)
-  return contacts;
+function main(){
+  //var idTabela = criarTabela();
+  var idTabela = "1YclMyNcf54E1zr45SHzhLvw0E5ncEaQEHNy5yJ_2Y6o";
+  preencherTabela(idTabela);
+  excluirTabela(idTabela)
+}
+function contatos() {
+  return ContactsApp.getAllContacts();
 }
 
 function criarTabela(){
   idTabela = SpreadsheetApp.create("Telefones").getId();
   SpreadsheetApp.openById(idTabela).getSheetByName("Página1").setName("contatos");
+  return idTabela;
 }
-
-function preencherTabela(){
+function excluirTabela(idTabela){
+  SpreadsheetApp.openById(idTabela).deleteSheet;
+}
+function preencherTabela(idTabela){
   let planilha = SpreadsheetApp.openById(idTabela);
-  planilha.getSheetByName("contatos").getRange
+  let contats = ContactsApp.getAllContacts();
+  Logger.log(contats)
+  Logger.log(contats.length)
+  planilha.getSheetByName("contatos").getRange(1,1,(contatos().length),1).setValue("1");
 
 }
