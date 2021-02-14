@@ -27,7 +27,7 @@ function exeProteger(){
   let intervalos = []
 
   var aux  = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
-  var aux3 = ss.getSheetByName("Aux").getRange("G3:G52").getValues();
+  var aux3 = ss.getSheetByName("Aux").getRange("F3:F52").getValues();
 
   for (i = 0; i < 50; i++){
     if(aux[i]  != ""){email.push(aux[i]);} // Lista de email de editores exceto os vazios
@@ -73,7 +73,7 @@ function limitar(){
   let ativa;
   let email = [];
   let intervalos = [];
-  let aux  = ss.getSheetByName("Aux").getRange("G3:G52").getValues();
+  let aux  = ss.getSheetByName("Aux").getRange("F3:F52").getValues();
   let aux1 = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
 
   for (i = 0; i < 50; i++){
@@ -161,7 +161,7 @@ function zerar(){
 function getProfs(){
   let prof = []; // lista total de professores
   let turma = ss.getSheetByName("Escola");
-  let turmas = ss.getSheetByName("Aux").getRange("E1").getValue();
+  let turmas = getTurmas().length;
   for (let i = 0; i < turmas; i++){
     for (let j = 0;j < 50; j++){
       let aux = turma.getRange((i+8),(j+14)).getValue();
