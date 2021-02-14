@@ -7,6 +7,8 @@ function foo(){
 function onOpen() {
   SpreadsheetApp.getUi() 
     .createMenu('Menu de Funções')
+    .addSubMenu(SpreadsheetApp.getUi().createMenu('Planilha')
+      .addItem('Replicar Planilha', 'duplicarPlaniha'))
     .addSubMenu(SpreadsheetApp.getUi().createMenu('Turmas')
       .addItem('Criar Turmas', 'criarTurmas')
       .addItem('Excluir Turmas', 'excluirTurmas'))
@@ -219,7 +221,7 @@ function duplicarPlaniha(){
   let mes = Browser.inputBox("Digite o Mês", "Digite o mês",Browser.Buttons.OK);
   if(mesNumerico(mes)==0){Browser.msgBox("Erro","Mês digitado é inválido",Browser.Buttons.OK)}
   else{
-//  ss.copy(mesNumerico(mes) + " " + mes + " - " + nome);
+//  ss.copy(mesNumerico(mes) + " " + mes.toToUpperCase() + " - " + nome);
   Browser.msgBox("Criar planilha da escola","Planilha da escola " + nome + " foi criada com Sucesso",Browser.Buttons.OK);
   }
 }
