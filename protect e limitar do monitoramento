@@ -42,7 +42,7 @@ function proteger(email, intervalos, professores){
   let sheets = ss.getSheets();
   let ativa, auxi
 
-  for (var i = 0; i < sheets.length; i++){
+  for (let i = 0; i < sheets.length; i++){
     ativa = ss.getSheetByName(sheets[i].getName());
     switch (sheets[i].getName()) {
       case "Aux":
@@ -51,7 +51,7 @@ function proteger(email, intervalos, professores){
         auxi = ativa.protect().setDescription("Células Protegidas");
         break;
       default:
-        var unprotected = []
+        var unprotected = [];
         for (var j = 0; j < intervalos.length; j++) {
           auxi = ativa.protect().setDescription("Células Protegidas");
           unprotected.push(ativa.getRange(intervalos[j]));
@@ -69,8 +69,8 @@ function limitar(){
 
   let sheets = ss.getSheets();
   let ativa;
-  let email = []
-  let intervalos = []
+  let email = [];
+  let intervalos = [];
   let aux  = ss.getSheetByName("Aux").getRange("G3:G52").getValues();
   let aux1 = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
 
@@ -82,7 +82,7 @@ function limitar(){
 // Procurar por aba
   for (let i = 0; i < sheets.length; i++){
     ativa = ss.getSheetByName(sheets[i].getName());
-    for(let j = 0; j < (sheets.length - 3); j++){
+    for (let j = 0; j < (sheets.length - 3); j++){
       if(sheets[(i)].getName() == ss.getSheetByName("Escola").getRange("G"+(j+8)).getValue()) {
         var editores = []
         for (let k = 0; k < 50; k++){
@@ -211,5 +211,32 @@ function excluirTurmas(){
       if (old) ss.deleteSheet(old);
     }
   Browser.msgBox("Exclusão de Turmas","Turmas excluídas com sucesso",Browser.Buttons.OK)  
+  }
+}
+
+function duplicarPlaniha(){
+  let nome = Browser.inputBox("Digite a Escola", "Digite o nome da Escola",Browser.Buttons.OK);
+  let mes = Browser.inputBox("Digite o Mês", "Digite o mês",Browser.Buttons.OK);
+  if(mesNumerico(mes)==0){Browser.msgBox("Erro","Mês digitado é inválido",Browser.Buttons.OK)}
+  else{
+//  ss.copy(mesNumerico(mes) + " " + mes + " - " + nome);
+  Browser.msgBox("Criar planilha da escola","Planilha da escola " + nome + " foi criada com Sucesso",Browser.Buttons.OK);
+  }
+}
+function mesNumerico(mes){
+  switch (mes.toUpperCase()){
+    case "JANEIRO": return "01";
+    case "FEVEREIRO": return "02";
+    case "MARÇO": return "03";
+    case "ABRIL": return "04";
+    case "MAIO": return "05";
+    case "JUNHO": return "06";
+    case "JULHO": return "07";
+    case "AGOSTO": return "08";
+    case "SETEMBRO": return "09";
+    case "OUTUBRO": return "10";
+    case "NOVEMBRO": return "11";
+    case "DEZEMBRO": return "12";
+    default: return 0;
   }
 }
