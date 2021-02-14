@@ -1,8 +1,9 @@
-var ss = SpreadsheetApp.getActiveSpreadsheet();
+const ss = SpreadsheetApp.getActiveSpreadsheet();
+
 function foo(){
   SpreadsheetApp.getActiveSpreadsheet().toast('Task started', 'Status')
-
 }
+
 function onOpen() {
   SpreadsheetApp.getUi() 
     .createMenu('Menu de Funções')
@@ -12,7 +13,7 @@ function onOpen() {
     .addSubMenu(SpreadsheetApp.getUi().createMenu('Proteção')
       .addItem('Consolidar Dados', 'consolidar')    
       .addItem('Proteger', 'exeProteger')
-      .addItem('Remover Proteções', 'removerProtecoes'))
+      .addItem('Remover Proteções', 'eliminarProtecoes'))
     .addSubMenu(SpreadsheetApp.getUi().createMenu('Zerar')
       .addItem('Zerar Planilha','zerar'))
     .addToUi();
@@ -33,7 +34,7 @@ function exeProteger(){
 
 //EXECUTA FUNÇÃO DE PROTEÇÃO
   proteger(email,intervalos,getProfs());
-  limitar();
+  eliminarProtecoes();
   Browser.msgBox("Aviso","Proteções Ativadas",Browser.Buttons.OK);
 }
 
@@ -63,19 +64,8 @@ function proteger(email, intervalos, professores){
   }
 }
 
-function removerProtecoes(){
-  let sheets = ss.getSheets();
-  let ativa
-
-  for (var i = 0; i < sheets.length; i++) {
-    ativa = ss.getSheetByName(sheets[i].getName());
-    ativa.protect().remove();
-  }
-  Browser.msgBox("Aviso","Proteções Desativadas",Browser.Buttons.OK);
-}
-
 function limitar(){
-  eliminar();
+  eliminarProtecoes();
 
   let sheets = ss.getSheets();
   let ativa;
@@ -107,15 +97,25 @@ function limitar(){
         aux.addEditors(editores);
 }}}}}
 
-function eliminar(){
+// Remover todas as proteções da tabela
+function eliminarProtecoes(){
   let protections = ss.getProtections(SpreadsheetApp.ProtectionType.RANGE);
-  for (var i = 0; i < protections.length; i++) {
+  for (let i = 0; i < protections.length; i++) {
     let protection = protections[i];
+    if (protection.canEdit()){
+      protection.remove();
+    }
+  }
+  let protectionsSheet = ss.getProtections(SpreadsheetApp.ProtectionType.SHEET);
+  for (let i = 0; i < protectionsSheet.length; i++) {
+    let protection = protectionsSheet[i];
     if (protection.canEdit()) {
       protection.remove();
     }
   }
+  Browser.msgBox("Aviso","Proteções Desativadas",Browser.Buttons.OK);
 }
+
 function consolidar(){
 //CRIA ARRAY DOS INTERVALOS A SEREM LIBERADOS -- DETERMINAR TODOS OS INTERVALOS ;
   let email = []
@@ -187,6 +187,7 @@ function criarTurmas(){
   }
   Browser.msgBox("Turmas criadas com sucesso")  
 }
+
 function criarTurma(nturma){
   let base = ss.getSheetByName("Base");
   let old = ss.getSheetByName(nturma);
@@ -200,6 +201,7 @@ function criarTurma(nturma){
   turma = base.copyTo(ss).setName(nturma).showSheet();
   turma.getRange("H4").setValue(nturma);
 }
+
 function excluirTurmas(){
   let turmas = getTurmas();
   let resposta = Browser.msgBox('Excluir turmas? ','Deseja realmente excluir todas as turmas? Todos os dados serão perdidos.',Browser.Buttons.YES_NO);
