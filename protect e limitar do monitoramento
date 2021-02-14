@@ -1,40 +1,46 @@
-// Inserir o Menu na planilha
+var ss = SpreadsheetApp.getActiveSpreadsheet();
+function foo(){
+  SpreadsheetApp.getActiveSpreadsheet().toast('Task started', 'Status')
+
+}
 function onOpen() {
   SpreadsheetApp.getUi() 
-      .createMenu('Menu de Funções')
+    .createMenu('Menu de Funções')
+    .addSubMenu(SpreadsheetApp.getUi().createMenu('Turmas')
+      .addItem('Criar Turmas', 'criarTurmas')
+      .addItem('Excluir Turmas', 'excluirTurmas'))
+    .addSubMenu(SpreadsheetApp.getUi().createMenu('Proteção')
+      .addItem('Consolidar Dados', 'consolidar')    
       .addItem('Proteger', 'exeProteger')
-      .addItem('Remover Proteções', 'removerProtecoes')
-      .addItem('Inserir Coluna Kits','inserir')
-      .addItem('Inserir Formulas','hora')
-      .addItem('Zerar Planilha','zerar')  
-      .addToUi();
+      .addItem('Remover Proteções', 'removerProtecoes'))
+    .addSubMenu(SpreadsheetApp.getUi().createMenu('Zerar')
+      .addItem('Zerar Planilha','zerar'))
+    .addToUi();
 }
 
 function exeProteger(){
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-//CRIA ARRAY DOS INTERVALOS A SEREM LIBERADOS -- DETERMINAR TODOS OS INTERVALOS ;
-  var email = []
-  var professores = []
-  var intervalos = []
-  var aux = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
-  var aux2 = ss.getSheetByName("Aux").getRange("F3:F52").getValues();
+  //CRIA ARRAY DOS INTERVALOS A SEREM LIBERADOS -- DETERMINAR TODOS OS INTERVALOS ;
+  let email = []
+  let intervalos = []
+
+  var aux  = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
   var aux3 = ss.getSheetByName("Aux").getRange("G3:G52").getValues();
+
   for (i = 0; i < 50; i++){
-    if(aux[i] != ""){email.push(aux[i]);} // Lista de email de editores exceto os vazios
-    if(aux2[i] != ""){professores.push(aux2[i]);}// Lista de email dos professores exceto os vazios
+    if(aux[i]  != ""){email.push(aux[i]);} // Lista de email de editores exceto os vazios
     if(aux3[i] != ""){intervalos.push(aux3[i]);}// Lista de invervalos exceto os vazios
   }
+
 //EXECUTA FUNÇÃO DE PROTEÇÃO
-  proteger(email,intervalos,professores);
+  proteger(email,intervalos,getProfs());
   limitar();
   Browser.msgBox("Aviso","Proteções Ativadas",Browser.Buttons.OK);
 }
 
 function proteger(email, intervalos, professores){
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheets = ss.getSheets();
-  var ativa, auxi
-//  for (var i = 0; i < 5; i++){
+  let sheets = ss.getSheets();
+  let ativa, auxi
+
   for (var i = 0; i < sheets.length; i++){
     ativa = ss.getSheetByName(sheets[i].getName());
     switch (sheets[i].getName()) {
@@ -49,187 +55,159 @@ function proteger(email, intervalos, professores){
           auxi = ativa.protect().setDescription("Células Protegidas");
           unprotected.push(ativa.getRange(intervalos[j]));
         }
-        auxi.setUnprotectedRanges(unprotected);          
+        auxi.setUnprotectedRanges(unprotected); 
         break;
     }
     auxi.addEditors(email);
     auxi.removeEditors(professores);
-}}
+  }
+}
 
 function removerProtecoes(){
-var ss = SpreadsheetApp.getActiveSpreadsheet();
-var sheets = ss.getSheets();
-var ativa
-for (var i = 0; i < sheets.length; i++) {
-  ativa = ss.getSheetByName(sheets[i].getName());
-  ativa.protect().remove();
+  let sheets = ss.getSheets();
+  let ativa
+
+  for (var i = 0; i < sheets.length; i++) {
+    ativa = ss.getSheetByName(sheets[i].getName());
+    ativa.protect().remove();
   }
   Browser.msgBox("Aviso","Proteções Desativadas",Browser.Buttons.OK);
 }
 
-function inserir(){
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheets = ss.getSheets();
-  var ativa // turma ativa
-  for (var i = 0; i < sheets.length; i++){
-    switch(sheets[i].getName()) {
-      case "Aux":
-      case "Escola":
-      case "GERAL":
-        break;
-      default:
-        ativa = ss.getSheetByName(sheets[i].getName());
-        if (ss.getSheetByName(sheets[i].getName()).getRange("Q8").getValue() == "Kit Al."){}else{
-          ativa.insertColumnBefore(17); // insere coluna q
-          ativa.getRange("Q8").setValue("Kit Al."); // insere valor na coluna q
-          ativa.autoResizeColumn(17);
-          ativa.insertRows(44,13);
-          ativa.getRange("B59").setValue("Totais por Canal de Acesso:");
-          ativa.getRange("B60").setValue("Retiraram Atividade SEM INTERAÇÃO");
-          ativa.getRange("B61").setValue("NÃO RETIRARAM Atividade NEM INTERAGIRAM");
-          ativa.getRange("B62").setValue("NÃO RETIRARAM ATIVIDADE MAS INTERAGIRAM");
-          ativa.getRange("B63").setValue("SEM ACESSO DECLARADO");
-          ativa.getRange("B65").setValue("Tem DEVOLUTIVA e PRESENTES (SIM / SIM)");
-          ativa.getRange("B66").setValue("Não tem DEVOLUTIVA E PRESENTES (NÃO / SIM)");
-          ativa.getRange("B67").setValue("Tem DEVOLUTIVA e NÃO PRESENTES (SIM / NÃO)");
-          ativa.getRange("B68").setValue("Não tem DEVOLUTIVA E NÃO PRESENTES (NÃO / NÃO)");
-          ativa.getRange("Q60").setValue("Ind. > ._. NÃO");
-          ativa.getRange("R65").setValue("INTERAÇÃO = DEVOLUTIVA + PRESENÇA");
-        }
-        ativa.getRange("Q9").setFormula('=IMPORTRANGE(Aux!B60;"'+sheets[i].getName()+'!BG9:BG45")'); // insere a formula na coluna q
-        ativa.getRange("R9").setFormula('=IMPORTRANGE(Aux!B60;"'+sheets[i].getName()+'!BH9:BH45")'); // insere a formula na coluna r        
-        ativa.getRange("P59").setFormula('=COUNTIF($P$9:$P$58; "<>")');
-        ativa.getRange("Q59").setFormula('=SUM($Q$9:$Q$58)');
-        ativa.getRange("P60").setFormula('=COUNTIFS($R9:$R$58;">0";$BH$9:$BH$58;"=0")');
-        ativa.getRange("P61").setFormula('=COUNTIFS($R$9:$R$58;"=0";$BH$9:$BH$58;"=0")');
-        ativa.getRange("Q61").setFormula('=COUNTIF(Q9:Q58;"=0")');
-        ativa.getRange("R61").setFormula('=COUNTIF($R$9:$R$58;"=0")');
-        ativa.getRange("S61").setFormula('=COUNTIF($S$9:$S$58;"=0")');
-        ativa.getRange("T61").setFormula('=COUNTIF($T$9:$T$58;"=0")');
-        ativa.getRange("P62").setFormula('=COUNTIFS($R$9:$R$58;"=0";$BH$9:$BH$58;">0")');
-        ativa.getRange("P63").setFormula('=SUM(P9:P58)');
-        ativa.getRange("P65").setFormula('=COUNTIFS($S$9:$S$58;"<>0";$BH$9:$BH$58;"<>0")');
-        ativa.getRange("P66").setFormula('=COUNTIFS($S$9:$S$58;"=0";$BH$9:$BH$58;"<>0")');
-        ativa.getRange("P67").setFormula('=COUNTIFS($S$9:$S$58;"<>0";$BH$9:$BH$58;"=0")');
-        ativa.getRange("P68").setFormula('=COUNTIFS($S$9:$S$58;"=0";$BH$9:$BH$58;"=0")');
-        ativa.getRange("BI7").setFormula('=MAX(COUNTIF(AC62:BG62;"<>0");COUNTIF(AC61:BG61;"<>0"))'); // Dias Letivos
-        ativa.getRange("BJ60").setFormula('=SUM(AC61:BG61)/SUM(AC61:BG62)'); // Frequencia Mês
-        ativa.getRange("BK60").setFormula('=SUM(AC61:BG61)/MAX(COUNTIF(AC62:BG62;"<>0");COUNTIF(AC61:BG61;"<>0"))'); // Media Freq Dia
-        ativa.getRange("BL60").setFormula('=SUM(AC62:BG62)/SUM(AC61:BG62)'); // Faltas Mês
-        // Formulas linha a linha
-        for(var j=0;j<50;j++){
-          ativa.getRange("A"+(j+9)).setValue(1+j);
-          ativa.getRange("T"+(j+9)).setFormula('=BH'+(j+9)+'+S'+(j+9));
-          ativa.getRange("BH"+(j+9)).setFormula('=COUNTIF(AC'+(j+9)+':BG'+(j+9)+';"P")');
-          ativa.getRange("BI"+(j+9)).setFormula('=COUNTIF(AC'+(j+9)+':BG'+(j+9)+';"F")');
-          ativa.getRange("BJ"+(j+9)).setFormula('=IFERROR(BH'+(j+9)+'/$BI$7;0)');
-          ativa.getRange("BK"+(j+9)).setFormula('=IFERROR(BI'+(j+9)+'/$BI$7;0)');
-        }
-        break;
-}}}
-
 function limitar(){
   eliminar();
-  var ss = SpreadsheetApp.getActive();
-  var sheets = ss.getSheets();
-  var ativa, aux
-  var email = []
-  var intervalos = []
-  var aux = ss.getSheetByName("Aux").getRange("G3:G52").getValues();
-  var aux1 = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
+
+  let sheets = ss.getSheets();
+  let ativa;
+  let email = []
+  let intervalos = []
+  let aux  = ss.getSheetByName("Aux").getRange("G3:G52").getValues();
+  let aux1 = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
+
   for (i = 0; i < 50; i++){
-    if(aux[i] != ""){intervalos.push(aux[i]);}
+    if(aux[i]  != ""){intervalos.push(aux[i]);}
     if(aux1[i] != ""){email.push(aux1[i]);}
   }
-  for (var i = 0; i < sheets.length; i++){
-    // Procurar por aba
+
+// Procurar por aba
+  for (let i = 0; i < sheets.length; i++){
     ativa = ss.getSheetByName(sheets[i].getName());
-    for(var j = 0; j < (sheets.length - 3); j++){
+    for(let j = 0; j < (sheets.length - 3); j++){
       if(sheets[(i)].getName() == ss.getSheetByName("Escola").getRange("G"+(j+8)).getValue()) {
         var editores = []
-        for (var k = 0; k < 50; k++){
+        for (let k = 0; k < 50; k++){
           if (k < email.length){editores.push(email[k]);} //insere o email dos editores a relação geral
-          var aux1 = ss.getSheetByName("Escola").getRange((8+j),(k+14)).getValues();
+          let aux1 = ss.getSheetByName("Escola").getRange((8+j),(k+14)).getValues();
           if(aux1 != ""){editores.push(aux1);}
         }
-        ativa = ss.getSheetByName(sheets[i].getName());
-        for(var k = 0; k < intervalos.length; k++){
-          aux = ativa.getRange(intervalos[k]).protect().setDescription("Células Protegidas");
-          aux.removeEditors(aux.getEditors());
-          aux.addEditors(editores);
+      ativa = ss.getSheetByName(sheets[i].getName());
+      for(let k = 0; k < intervalos.length; k++){
+        aux = ativa.getRange(intervalos[k]).protect().setDescription("Células Protegidas");
+        aux.removeEditors(aux.getEditors());
+        aux.addEditors(editores);
 }}}}}
 
 function eliminar(){
-  var ss = SpreadsheetApp.getActive();
-  var protections = ss.getProtections(SpreadsheetApp.ProtectionType.RANGE);
+  let protections = ss.getProtections(SpreadsheetApp.ProtectionType.RANGE);
   for (var i = 0; i < protections.length; i++) {
-    var protection = protections[i];
+    let protection = protections[i];
     if (protection.canEdit()) {
       protection.remove();
-}}}
-
-function hora(){
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheets = ss.getSheets();
-  var ativa // turma ativa
-  for (var i = 0; i < sheets.length; i++){
-    switch(sheets[i].getName()) {
-      case "Aux":
-      case "Escola":
-      case "GERAL":
-        break;
-      default:
-        ativa = ss.getSheetByName(sheets[i].getName());
-        ativa.getRange("Q9").setFormula('=IMPORTRANGE(Aux!B60;"'+sheets[i].getName()+'!BG9:BG45")'); // insere a formula na coluna q
-        ativa.getRange("R9").setFormula('=IMPORTRANGE(Aux!B60;"'+sheets[i].getName()+'!BH9:BH45")'); // insere a formula na coluna r        
-        ativa.getRange("P59").setFormula('=COUNTIF($P$9:$P$58; "<>")');
-        ativa.getRange("Q59").setFormula('=SUM($Q$9:$Q$58)');
-        ativa.getRange("P60").setFormula('=COUNTIFS($R9:$R$58;">0";$BH$9:$BH$58;"=0")');
-        ativa.getRange("P61").setFormula('=COUNTIFS($R$9:$R$58;"=0";$BH$9:$BH$58;"=0")');
-        ativa.getRange("Q61").setFormula('=COUNTIF(Q9:Q58;"=0")');
-        ativa.getRange("R61").setFormula('=COUNTIF($R$9:$R$58;"=0")');
-        ativa.getRange("S61").setFormula('=COUNTIF($S$9:$S$58;"=0")');
-        ativa.getRange("T61").setFormula('=COUNTIF($T$9:$T$58;"=0")');
-        ativa.getRange("P62").setFormula('=COUNTIFS($R$9:$R$58;"=0";$BH$9:$BH$58;">0")');
-        ativa.getRange("P63").setFormula('=SUM(P9:P58)');
-        ativa.getRange("P65").setFormula('=COUNTIFS($S$9:$S$58;"<>0";$BH$9:$BH$58;"<>0")');
-        ativa.getRange("P66").setFormula('=COUNTIFS($S$9:$S$58;"=0";$BH$9:$BH$58;"<>0")');
-        ativa.getRange("P67").setFormula('=COUNTIFS($S$9:$S$58;"<>0";$BH$9:$BH$58;"=0")');
-        ativa.getRange("P68").setFormula('=COUNTIFS($S$9:$S$58;"=0";$BH$9:$BH$58;"=0")');
-        ativa.getRange("BI7").setFormula('=MAX(COUNTIF(AC62:BG62;"<>0");COUNTIF(AC61:BG61;"<>0"))'); // Dias Letivos
-        ativa.getRange("BJ60").setFormula('=SUM(AC61:BG61)/SUM(AC61:BG62)'); // Frequencia Mês
-        ativa.getRange("BK60").setFormula('=SUM(AC61:BG61)/MAX(COUNTIF(AC62:BG62;"<>0");COUNTIF(AC61:BG61;"<>0"))'); // Media Freq Dia
-        ativa.getRange("BL60").setFormula('=SUM(AC62:BG62)/SUM(AC61:BG62)'); // Faltas Mês
-        // Formulas linha a linha
-        for(var j=0;j<50;j++){
-          ativa.getRange("A"+(j+9)).setValue(1+j);
-          ativa.getRange("T"+(j+9)).setFormula('=BH'+(j+9)+'+S'+(j+9));
-          ativa.getRange("BH"+(j+9)).setFormula('=COUNTIF(AC'+(j+9)+':BG'+(j+9)+';"P")');
-          ativa.getRange("BI"+(j+9)).setFormula('=COUNTIF(AC'+(j+9)+':BG'+(j+9)+';"F")');
-          ativa.getRange("BJ"+(j+9)).setFormula('=IFERROR(BH'+(j+9)+'/$BI$7;0)');
-          ativa.getRange("BK"+(j+9)).setFormula('=IFERROR(BI'+(j+9)+'/$BI$7;0)');
-        }
-        break;
-}}}
-
-function zerar(){ 
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sheets = ss.getSheets();
-  var resposta = Browser.msgBox('Zerar tabelas','Deseja realmente zerar as tabelas?',Browser.Buttons.YES_NO);
-  var ativa // turma ativa
-//  for (var i = 0; i < sheets.length; i++){
+    }
+  }
+}
+function consolidar(){
+//CRIA ARRAY DOS INTERVALOS A SEREM LIBERADOS -- DETERMINAR TODOS OS INTERVALOS ;
+  let email = []
+  let aux = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
+ // Lista de email de editores exceto os vazios
+  for (i = 0; i < 50; i++){if(aux[i] != ""){email.push(aux[i]);}}
+//EXECUTA FUNÇÃO DE PROTEÇÃO
+  let sheets = ss.getSheets();
+  let ativa;
+  let auxi;
+  for (let i = 0; i < sheets.length; i++){
+    ativa = ss.getSheetByName(sheets[i].getName());
+    auxi = ativa.protect().setDescription("Células Protegidas");
+    auxi.removeEditors(auxi.getEditors());
+    auxi.addEditors(email);
+  }
+  Browser.msgBox("Aviso","Proteções Ativadas",Browser.Buttons.OK);
+}
+function zerar(){
+  let sheets = ss.getSheets();
+  let resposta = Browser.msgBox('Zerar tabelas','Deseja realmente zerar todas as tabelas?',Browser.Buttons.YES_NO);
+  let ativa // turma ativa
   if(resposta == "yes"){
-  for (var i = 0; i < 7; i++){
-   switch(sheets[i].getName()) {
-      case "Aux":
-      case "Escola":
-      case "GERAL":
-        break;
-      default:
-        ativa = ss.getSheetByName(sheets[i].getName());
-        ativa.getRange("P9:P58").setValue(""); // zera a coluna P
-        ativa.getRange("S9:S58").setValue(""); // zera a coluna S
-        ativa.getRange("AC9:BG58").setValue(""); // zera as colunas AC9 a BG58
-       break;}}
+    for (var i = 0; i < sheets.length; i++){
+      switch(sheets[i].getName()) {
+        case "Aux":
+        case "Escola":
+        case "GERAL":
+          break;
+        default:
+          ativa = ss.getSheetByName(sheets[i].getName());
+//          ativa.getRange("P9:P58").setValue(""); // zera a coluna P
+//          ativa.getRange("S9:S58").setValue(""); // zera a coluna S
+//          ativa.getRange("AC9:BG58").setValue(""); // zera as colunas AC9 a BG58
+         break;
+      }
+    }
   Browser.msgBox("Planilha zerada com sucesso")
-}}
+  }
+}
+function getProfs(){
+  let prof = []; // lista total de professores
+  let turma = ss.getSheetByName("Escola");
+  let turmas = ss.getSheetByName("Aux").getRange("E1").getValue();
+  for (let i = 0; i < turmas; i++){
+    for (let j = 0;j < 50; j++){
+      let aux = turma.getRange((i+8),(j+14)).getValue();
+      if (aux != ""){
+        prof.push(aux);
+      }
+    }
+  }
+  return (prof.filter(function(item, pos) {
+    return prof.indexOf(item) == pos;}).sort());
+}
+function getTurmas(){
+  let turmas = [];
+  for(let i = 1; i < 50; i++){
+    if (ss.getSheetByName("Escola").getRange("F" + i).getValue() == "ENSINO FUNDAMENTAL DE 9 ANOS" || ss.getSheetByName("Escola").getRange("F" + i).getValue() == "EDUCACAO INFANTIL" ){
+      turmas.push(ss.getSheetByName("Escola").getRange("G" + i).getValue());
+    }
+  }
+  return turmas;
+}
+function criarTurmas(){
+  let turmas = getTurmas();
+  for (let i=0; i < turmas.length;i++){
+    criarTurma(turmas[i]);
+  }
+  Browser.msgBox("Turmas criadas com sucesso")  
+}
+function criarTurma(nturma){
+  let base = ss.getSheetByName("Base");
+  let old = ss.getSheetByName(nturma);
+  /* Excluir a turma anterior antes de criar a nova */
+  if (old){
+    let resposta = Browser.msgBox('Excluir tabela ' + nturma,'Deseja realmente excluir a tabela ' + nturma + '? Todos os dados serão perdidos.',Browser.Buttons.YES_NO);
+    if (resposta == "yes") {
+      ss.deleteSheet(old);  
+    }
+  }
+  turma = base.copyTo(ss).setName(nturma).showSheet();
+  turma.getRange("H4").setValue(nturma);
+}
+function excluirTurmas(){
+  let turmas = getTurmas();
+  let resposta = Browser.msgBox('Excluir turmas? ','Deseja realmente excluir todas as turmas? Todos os dados serão perdidos.',Browser.Buttons.YES_NO);
+  if (resposta == "yes") {
+    for (let i=0; i < turmas.length;i++){
+      let old = ss.getSheetByName(turmas[i])
+      if (old) ss.deleteSheet(old);
+    }
+  Browser.msgBox("Exclusão de Turmas","Turmas excluídas com sucesso",Browser.Buttons.OK)  
+  }
+}
