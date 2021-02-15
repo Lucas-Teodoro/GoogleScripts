@@ -1,0 +1,49 @@
+const ss = SpreadsheetApp.getActiveSpreadsheet();
+const modelo = SpreadsheetApp.openById("10J6s-CNJ-qB61mPACPlTRrMoyZfEvlU8lLp4nR0XmGg");
+
+function onOpen() {
+  SpreadsheetApp.getUi() 
+    .createMenu('Menu de Funções')
+    .addItem('Replicar Planilhas', 'duplicarPlanihas')
+    .addToUi();
+}
+function mesNumerico(mes){
+  switch (mes){
+    case "JANEIRO": return "01";
+    case "FEVEREIRO": return "02";
+    case "MARÇO": return "03";
+    case "ABRIL": return "04";
+    case "MAIO": return "05";
+    case "JUNHO": return "06";
+    case "JULHO": return "07";
+    case "AGOSTO": return "08";
+    case "SETEMBRO": return "09";
+    case "OUTUBRO": return "10";
+    case "NOVEMBRO": return "11";
+    case "DEZEMBRO": return "12";
+    default: return 0;
+  }
+}
+function getEscolas(){
+  let escolas = []; // lista total de professores
+  let turma = ss.getSheetByName("BD");
+  for (let i = 0; i < 50; i++){
+    let aux = turma.getRange("B"+(i+3)).getValue();
+    let aux1 = turma.getRange("A"+(i+3)).getValue();
+    if (aux == "TOTAIS"){break;}
+    if (aux != "" && aux1 != "-"){escolas.push(aux);}
+  }
+  return escolas;
+}
+function duplicarPlanihas_(){
+  let escolas = getEscolas();
+  let mes = Browser.inputBox("Digite o Mês", "Digite o mês",Browser.Buttons.OK);
+  console.log(mes);
+  if(mesNumerico(mes)==0){Browser.msgBox("Erro","Mês digitado é inválido",Browser.Buttons.OK)}
+  else{
+//    for (let i=0; i < escolas.length;i++){
+    for (let i=0; i < 1;i++){
+      ss.copy(mesNumerico(mes) + " " + mes + " - " + escola + " Monitoramento 2021");
+    }
+  Browser.msgBox("Criar Planilhas","As Planilhas do mês de " + mes + " foram criadas com Sucesso",Browser.Buttons.OK)}
+}
