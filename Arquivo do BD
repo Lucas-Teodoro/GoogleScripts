@@ -1,5 +1,5 @@
 const ss = SpreadsheetApp.getActiveSpreadsheet();
-const modelo = SpreadsheetApp.openById("10J6s-CNJ-qB61mPACPlTRrMoyZfEvlU8lLp4nR0XmGg");
+const modeloID = "10J6s-CNJ-qB61mPACPlTRrMoyZfEvlU8lLp4nR0XmGg";
 
 function onOpen() {
   SpreadsheetApp.getUi() 
@@ -31,19 +31,40 @@ function getEscolas(){
     let aux = turma.getRange("B"+(i+3)).getValue();
     let aux1 = turma.getRange("A"+(i+3)).getValue();
     if (aux == "TOTAIS"){break;}
-    if (aux != "" && aux1 != "-"){escolas.push(aux);}
+    if (aux != ""){escolas.push(aux);}
   }
   return escolas;
 }
-function duplicarPlanihas_(){
+function meses(mes){
+  switch (mes){
+    case "JANEIRO": return 1;
+    case "FEVEREIRO": return 2;
+    case "MARÇO": return 3;
+    case "ABRIL": return 4;
+    case "MAIO": return 5;
+    case "JUNHO": return 6;
+    case "JULHO": return 7;
+    case "AGOSTO": return 8;
+    case "SETEMBRO": return 9;
+    case "OUTUBRO": return 10;
+    case "NOVEMBRO": return 11;
+    case "DEZEMBRO": return 12;
+    default: return 0;
+  }
+}
+
+function duplicarPlanihas(){
   let escolas = getEscolas();
   let mes = Browser.inputBox("Digite o Mês", "Digite o mês",Browser.Buttons.OK);
-  console.log(mes);
+  mes = mes.toUpperCase();
   if(mesNumerico(mes)==0){Browser.msgBox("Erro","Mês digitado é inválido",Browser.Buttons.OK)}
   else{
-//    for (let i=0; i < escolas.length;i++){
-    for (let i=0; i < 1;i++){
-      ss.copy(mesNumerico(mes) + " " + mes + " - " + escola + " Monitoramento 2021");
+    for (let i=0; i < escolas.length;i++){
+      if( ss.getSheetByName("BD").getRange((i+3),(meses(mes)+1)).getValue() == ""){
+        let plan = SpreadsheetApp.openById(modeloID).copy(mesNumerico(mes) + " " + mes + " - " + escolas[i] + " Monitoramento 2021");
+        ss.getSheetByName("BD").getRange((i+3),(meses(mes)+1)).setValue(plan.getUrl());
+      }
     }
-  Browser.msgBox("Criar Planilhas","As Planilhas do mês de " + mes + " foram criadas com Sucesso",Browser.Buttons.OK)}
+    Browser.msgBox("Criar Planilhas","As Planilhas do mês de " + mes + " foram criadas com Sucesso",Browser.Buttons.OK);
+  }
 }
