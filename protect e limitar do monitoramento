@@ -188,4 +188,5 @@ function mesNumerico(mes){
     case "NOVEMBRO": return "11";
     case "DEZEMBRO": return "12";
     default: return 0;
+    }
   }
