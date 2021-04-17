@@ -164,3 +164,28 @@ function getLinksTurmas(){
   console.log(links)
   return links;
 }
+function duplicarPlaniha(){
+  let nome = Browser.inputBox("Digite a Escola", "Digite o nome da Escola",Browser.Buttons.OK);
+  let mes = Browser.inputBox("Digite o Mês", "Digite o mês",Browser.Buttons.OK);
+  if(mesNumerico(mes)==0){Browser.msgBox("Erro","Mês digitado é inválido",Browser.Buttons.OK)}
+  else{
+//  ss.copy(mesNumerico(mes) + " " + mes.toToUpperCase() + " - " + nome);
+  Browser.msgBox("Criar planilha da escola","Planilha da escola " + nome + " foi criada com Sucesso",Browser.Buttons.OK);
+  }
+}
+function mesNumerico(mes){
+  switch (mes.toUpperCase()){
+    case "JANEIRO": return "01";
+    case "FEVEREIRO": return "02";
+    case "MARÇO": return "03";
+    case "ABRIL": return "04";
+    case "MAIO": return "05";
+    case "JUNHO": return "06";
+    case "JULHO": return "07";
+    case "AGOSTO": return "08";
+    case "SETEMBRO": return "09";
+    case "OUTUBRO": return "10";
+    case "NOVEMBRO": return "11";
+    case "DEZEMBRO": return "12";
+    default: return 0;
+  }
