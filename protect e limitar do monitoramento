@@ -192,14 +192,15 @@ function mesNumerico(mes){
 }
 function consolidar(){
 //Loop
-  let aba = ss.getSheetByName("P1A")
+  let aba = ss.getSheetByName("P1A");
+  let range = ['A9:F58','G9:AP58'];
 // Apagar bloqueios
   desprotegerAba(aba);
 // Sobrepor dados da aba
-
+  sobreporDados(aba, range)
 // Proteger somente editores
 //  protegerAba(aba);
-  protegerAba(aba, ['A9:F58','G9:AP58']);
+  protegerAba(aba, range);
 }
 
 function protegerAba(aba, range = [], professores = []){
@@ -276,4 +277,10 @@ function getEditores(){
   }
   return (edit.filter(function(item, pos) {
     return edit.indexOf(item) == pos;}).sort());
+}
+function sobreporDados(aba, range){
+  for(let i = 0; i < range.length; i++){
+    let dados = aba.getRange(range[i]).getValues();
+    aba.getRange(range[i]).setValues(dados);
+  }
 }
