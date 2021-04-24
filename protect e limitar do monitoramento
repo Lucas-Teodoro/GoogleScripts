@@ -14,8 +14,8 @@ SpreadsheetApp.getUi()
   .addToUi();
 
   // Atualiza a função getLinks na aba Geral
-  // ss.getSheetByName("GERAL").getRange("B7").setValue("");
-  // ss.getSheetByName("GERAL").getRange("B7").setFormula("=ARRAYFORMULA(IFERROR(HYPERLINK(getLinksTurmas();getTurmas());geTurmas()))")
+   ss.getSheetByName("GERAL").getRange("B7").setValue("");
+   ss.getSheetByName("GERAL").getRange("B7").setFormula("=ARRAYFORMULA(IFERROR(HYPERLINK(getLinksTurmas();getTurmas());geTurmas()))")
 }
 
 function exeProteger(){
@@ -134,11 +134,11 @@ function criarTurma(nturma){
     if (resposta == "yes") {
       ss.deleteSheet(old);
       let turma = base.copyTo(ss).setName(nturma).showSheet();
-      turma.getRange("H4").setValue(nturma);
+      turma.getRange("I4").setValue(nturma);
     }
   }else{
   let turma = base.copyTo(ss).setName(nturma).showSheet();
-  turma.getRange("H4").setValue(nturma);
+  turma.getRange("I4").setValue(nturma);
   }
 }
 function excluirTurmas(){
@@ -188,5 +188,92 @@ function mesNumerico(mes){
     case "NOVEMBRO": return "11";
     case "DEZEMBRO": return "12";
     default: return 0;
+  }
+}
+function consolidar(){
+//Loop
+  let aba = ss.getSheetByName("P1A")
+// Apagar bloqueios
+  desprotegerAba(aba);
+// Sobrepor dados da aba
+
+// Proteger somente editores
+//  protegerAba(aba);
+  protegerAba(aba, ['A9:F58','G9:AP58']);
+}
+
+function protegerAba(aba, range = [], professores = []){
+  let aux = aba.protect().setDescription("Células Protegidas");
+  if (range != []){
+    let unprotected = [];
+    let aux = aba.protect().setDescription("Células Protegidas");
+    for (let i = 0; i < range.length; i++ ){
+      unprotected.push(aba.getRange(range[i]));
+    }
+    aux.setUnprotectedRanges(unprotected);
+    limitarAba(aba, range);
+  }
+  aux.addEditors(getEditores());
+  aux.removeEditors(getProfessores());
+  console.log("ok")
+}
+function limitarAba(aba, range){
+//  let aux = aba.protect().setDescription("Células Protegidas"); 
+  for(let i = 0; i < range.length; i++){
+    let aux = aba.getRange(range[i]).protect().setDescription("Células Protegidas");
+    aux.addEditors(getEditores());
+    aux.addEditors(profPorTurma(aba.getName()));
+  } 
+}
+function profPorTurma(turma){
+  for (let i = 0; i < getTurmas().length; i++){
+    if (turma == ss.getSheetByName("Escola").getRange("G" + (i+8)).getValue()){
+      var aux = ss.getSheetByName("Escola").getRange("O" + (i+8) + ":AA" + (i+8)).getValues() 
+      return (aux[0].filter( (elem) => elem != ''))
     }
   }
+}
+function desprotegerAba(aba){
+  let protectionsRange = aba.getProtections(SpreadsheetApp.ProtectionType.RANGE);
+  let protectionsSheet = aba.getProtections(SpreadsheetApp.ProtectionType.SHEET);
+  for (var i = 0; i < protectionsRange.length; i++) {
+    let protection = protectionsRange[i];
+    if (protection.canEdit()) {
+      protection.remove();
+    }
+  }
+  for (var i = 0; i < protectionsSheet.length; i++) {
+    let protection = protectionsSheet[i];
+    if (protection.canEdit()) {
+      protection.remove();
+    }
+  }
+}
+function getProfessores(){
+  let prof = []; // lista total de professores
+  let turma = ss.getSheetByName("Escola");
+  let turmas = getTurmas().length;
+  for (let i = 0; i < turmas; i++){
+    for (let j = 0;j < 50; j++){
+      let aux = turma.getRange((i+8),(j+15)).getValue();
+      if (aux != ""){
+        prof.push(aux);
+      }
+    }
+  }
+  return (prof.filter(function(item, pos) {
+    return prof.indexOf(item) == pos;}).sort());
+}
+function getEditores(){
+  let edit = []; // lista total de professores
+  let sheet = ss.getSheetByName("Aux");
+  let turmas = getTurmas().length;
+  for (let i = 0; i < turmas; i++){
+    let aux = sheet.getRange((i+3),5).getValue();
+    if (aux != ""){
+      edit.push(aux);
+    }
+  }
+  return (edit.filter(function(item, pos) {
+    return edit.indexOf(item) == pos;}).sort());
+}
