@@ -298,3 +298,15 @@ function getEditores(){
   return (edit.filter(function(item, pos) {
     return edit.indexOf(item) == pos;}).sort());
 }
+function getIntevalos(){
+  let int = []; // lista total de intervalos a serem protegidos nas turmas
+  let sheet = ss.getSheetByName("Aux");
+  for (let i = 0; i < 15; i++){
+    let aux = sheet.getRange((i+3),7).getValue();
+    if (aux != ""){
+      int.push(aux);
+    }
+  }
+  return (int.filter(function(item, pos) {
+    return int.indexOf(item) == pos;}).sort());
+}
