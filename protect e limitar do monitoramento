@@ -1,21 +1,22 @@
 const ss = SpreadsheetApp.getActiveSpreadsheet();
 
-// Inserir o Menu na planilha 201022
+// Inserir o Menu na planilha
 
 function onOpen() {
 
-SpreadsheetApp.getUi() 
-  .createMenu('Menu de Funções')
-  .addItem('Proteger', 'exeProteger')
-  .addItem('Remover Proteções', 'removerProtecoes')
-  .addSubMenu(SpreadsheetApp.getUi().createMenu('Turmas')
-    .addItem('Criar Turmas', 'criarTurmas')
-    .addItem('Excluir Turmas', 'excluirTurmas'))
-  .addToUi();
+  SpreadsheetApp.getUi() 
+    .createMenu('Menu de Funções')
+    .addItem('Proteger', 'exeProteger')
+    .addItem('Remover Proteções', 'removerProtecoes')
+    .addSubMenu(SpreadsheetApp.getUi().createMenu('Turmas')
+      .addItem('Criar Turmas', 'criarTurmas')
+      .addItem('Excluir Turmas', 'excluirTurmas'))
+    .addItem('Consolidar', 'consolidar')
+    .addToUi();
 
-  // Atualiza a função getLinks na aba Geral
-   ss.getSheetByName("GERAL").getRange("B7").setValue("");
-   ss.getSheetByName("GERAL").getRange("B7").setFormula("=ARRAYFORMULA(IFERROR(HYPERLINK(getLinksTurmas();getTurmas());geTurmas()))")
+// Atualiza a função getLinks na aba Geral
+//   ss.getSheetByName("GERAL").getRange("B7").setValue("");
+//   ss.getSheetByName("GERAL").getRange("B7").setFormula("=ARRAYFORMULA(IFERROR(HYPERLINK(getLinksTurmas();getTurmas());geTurmas()))")
 }
 
 function exeProteger(){
@@ -92,7 +93,7 @@ function limitar(){
         var editores = []
         for (var k = 0; k < 50; k++){
           if (k < email.length){editores.push(email[k]);} //insere o email dos editores a relação geral
-          var aux1 = ss.getSheetByName("Escola").getRange((8+j),(k+14)).getValues();
+          var aux1 = ss.getSheetByName("Escola").getRange((9+j),(k+14)).getValues();
           if(aux1 != ""){editores.push(aux1);}
         }
         ativa = ss.getSheetByName(sheets[i].getName());
@@ -191,18 +192,55 @@ function mesNumerico(mes){
   }
 }
 function consolidar(){
+  let range = ['A9:F58','G9:AP58']
+  let turmas = getTurmas();
 //Loop
-  let aba = ss.getSheetByName("P1A");
-  let range = ['A9:F58','G9:AP58'];
-// Apagar bloqueios
-  desprotegerAba(aba);
-// Sobrepor dados da aba
-  sobreporDados(aba, range)
-// Proteger somente editores
-//  protegerAba(aba);
-  protegerAba(aba, range);
+  for(let i = 0; i < getTurmas().length;i++){
+    let aba = ss.getSheetByName(turmas[i]);
+  // Apagar bloqueios
+    desprotegerAba(aba);
+  // Sobrepor dados da aba
+    sobreporDados(aba, range);
+  // Proteger somente editores
+  //  protegerAba(aba);
+    protegerAba(aba, range);
+  }
+  Browser.msgBox("Consolidar planilha","Planilha consolidada com Sucesso",Browser.Buttons.OK);  
 }
+function consolidar(){
+  let range = ['A9:F58','G9:AP58']
+  let turmas = getTurmas();
+//Loop
+  for(let i = 0; i < getTurmas().length;i++){
+    let aba = ss.getSheetByName(turmas[i]);
+  // Apagar bloqueios
+    desprotegerAba(aba);
+  // Sobrepor dados da aba
+    sobreporDados(aba, range);
+  // Proteger somente editores
+  //  protegerAba(aba);
+    protegerAba(aba, range);
+  }
+  Browser.msgBox("Consolidar planilha","Planilha consolidada com Sucesso",Browser.Buttons.OK);  
+}
+function foo(){
+// Proteger as abas
+//  for(let i = 0; i < getTurmas.length; i++){
+//    protegerAba(getTurmas[i].getName, ['A9:F58','G9:AP58']);
 
+ // }
+  let aba = ss.getSheetByName("P1A")
+  sobreporDados(aba, ['A9:F58','G9:AP58']);
+}
+function sobreporDados(aba, range = []){
+  for(let i = 0; i < range.length; i++){
+    console.log(aba.getName() + " ok")
+    console.log(aba.getRange(range[i]).getValues())
+    let dados = aba.getRange(range[i]).getValues();
+    aba.getRange(range[i]).setValues(dados);
+    dados = []
+  }
+}
 function protegerAba(aba, range = [], professores = []){
   let aux = aba.protect().setDescription("Células Protegidas");
   if (range != []){
@@ -277,10 +315,4 @@ function getEditores(){
   }
   return (edit.filter(function(item, pos) {
     return edit.indexOf(item) == pos;}).sort());
-}
-function sobreporDados(aba, range){
-  for(let i = 0; i < range.length; i++){
-    let dados = aba.getRange(range[i]).getValues();
-    aba.getRange(range[i]).setValues(dados);
-  }
 }
