@@ -23,17 +23,17 @@ function exeProteger(){
 
 //CRIA ARRAY DOS INTERVALOS A SEREM LIBERADOS -- DETERMINAR TODOS OS INTERVALOS ;
 
-var email = []
-var professores = []
-var intervalos = []
-var aux = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
-var aux2 = ss.getSheetByName("Aux").getRange("F3:F52").getValues();
-var aux3 = ss.getSheetByName("Aux").getRange("G3:G52").getValues();
-for (i = 0; i < 50; i++){
-if(aux[i] != ""){email.push(aux[i]);} // Lista de email de editores exceto os vazios
-if(aux2[i] != ""){professores.push(aux2[i]);}// Lista de email dos professores exceto os vazios
-if(aux3[i] != ""){intervalos.push(aux3[i]);}// Lista de invervalos exceto os vazios
-}
+  var email = []
+  var professores = []
+  var intervalos = []
+  var aux = ss.getSheetByName("Aux").getRange("E3:E52").getValues();
+  var aux2 = ss.getSheetByName("Aux").getRange("F3:F52").getValues();
+  var aux3 = ss.getSheetByName("Aux").getRange("G3:G52").getValues();
+  for (i = 0; i < 50; i++){
+    if(aux[i] != ""){email.push(aux[i]);} // Lista de email de editores exceto os vazios
+    if(aux2[i] != ""){professores.push(aux2[i]);}// Lista de email dos professores exceto os vazios
+    if(aux3[i] != ""){intervalos.push(aux3[i]);}// Lista de invervalos exceto os vazios
+  }
 
 //EXECUTA FUNÇÃO DE PROTEÇÃO
   proteger(email,intervalos,professores);
@@ -65,11 +65,9 @@ function proteger(email, intervalos, professores){
   auxi.removeEditors(professores);
 }}
 function removerProtecoes(){
-  var sheets = ss.getSheets();
-  var ativa;
-  for (var i = 0; i < sheets.length; i++) {
-    ativa = ss.getSheetByName(sheets[i].getName());
-    ativa.protect().remove();
+  let sheets = ss.getSheets();
+  for (var i = 0; i < sheets.length; i++){
+    desprotegerAba(ss.getSheetByName(sheets[i].getName()));
   }
   Browser.msgBox("Aviso","Proteções Desativadas",Browser.Buttons.OK);
 }
@@ -190,22 +188,6 @@ function mesNumerico(mes){
     case "DEZEMBRO": return "12";
     default: return 0;
   }
-}
-function consolidar(){
-  let range = ['A9:F58','G9:AP58']
-  let turmas = getTurmas();
-//Loop
-  for(let i = 0; i < getTurmas().length;i++){
-    let aba = ss.getSheetByName(turmas[i]);
-  // Apagar bloqueios
-    desprotegerAba(aba);
-  // Sobrepor dados da aba
-    sobreporDados(aba, range);
-  // Proteger somente editores
-  //  protegerAba(aba);
-    protegerAba(aba, range);
-  }
-  Browser.msgBox("Consolidar planilha","Planilha consolidada com Sucesso",Browser.Buttons.OK);  
 }
 function consolidar(){
   let range = ['A9:F58','G9:AP58']
