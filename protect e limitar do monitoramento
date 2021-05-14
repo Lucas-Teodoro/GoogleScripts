@@ -6,7 +6,7 @@ function onOpen() {
   if (getEditores().indexOf(Session.getActiveUser())){// Verifica se o usuário ativo é um editor
     SpreadsheetApp.getUi() 
       .createMenu('Menu de Funções')
-      .addItem('Proteger', 'exeProteger')
+      .addItem('Proteger', 'proteger')
       .addItem('Remover Proteções', 'removerProtecoes')
       .addSubMenu(SpreadsheetApp.getUi().createMenu('Turmas')
         .addItem('Criar Turmas', 'criarTurmas')
@@ -140,9 +140,6 @@ function consolidar(){
   }
   Browser.msgBox("Consolidar planilha","Planilha consolidada com Sucesso",Browser.Buttons.OK);  
 }
-function foo(){
- console.log(getProfessores())
-}
 function sobreporDados(aba, range = []){
   for(let i = 0; i < range.length; i++){
     let dados = aba.getRange(range[i]).getValues();
@@ -216,7 +213,7 @@ function getEditores(){
   let sheet = ss.getSheetByName("Aux");
   let turmas = getTurmas().length;
   for (let i = 0; i < turmas; i++){
-    let aux = sheeta.getRange((i+3),5).getValue();
+    let aux = sheet.getRange((i+3),5).getValue();
     if (aux != ""){
       edit.push(aux);
     }
