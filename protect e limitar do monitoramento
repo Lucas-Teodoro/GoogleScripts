@@ -22,16 +22,18 @@ function proteger(){
   let sheets = ss.getSheets();
   let turmas = getTurmas();
   const filterArray = (arr1, arr2) => {
-   const filtered = arr1.filter(el => {
+    const filtered = arr1.filter(el => {
       return arr2.indexOf(el.getName()) === -1;
    });
    return filtered;
 };
   let dados = filterArray(sheets, turmas)
   for (let i = 0; i < dados.length; i++){
+    console.log(dados[i].getName());    
     protegerAba(dados[i]);
   }
   for (let i = 0; i < turmas.length; i++){
+    console.log(turmas[i] + "turmas");
     protegerAba(ss.getSheetByName(turmas[i]), getIntevalos());
   }
 }
