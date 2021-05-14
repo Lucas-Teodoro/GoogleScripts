@@ -1,19 +1,19 @@
+// Declaração da SpreadSheet ativa 
 const ss = SpreadsheetApp.getActiveSpreadsheet();
 
 // Inserir o Menu na planilha
-
 function onOpen() {
-
-  SpreadsheetApp.getUi() 
-    .createMenu('Menu de Funções')
-    .addItem('Proteger', 'proteger')
-    .addItem('Remover Proteções', 'removerProtecoes')
-    .addSubMenu(SpreadsheetApp.getUi().createMenu('Turmas')
-      .addItem('Criar Turmas', 'criarTurmas')
-      .addItem('Excluir Turmas', 'excluirTurmas'))
-    .addItem('Consolidar', 'consolidar')
-    .addToUi();
-
+  if (getEditores().indexOf(Session.getActiveUser())){// Verifica se o usuário ativo é um editor
+    SpreadsheetApp.getUi() 
+      .createMenu('Menu de Funções')
+      .addItem('Proteger', 'exeProteger')
+      .addItem('Remover Proteções', 'removerProtecoes')
+      .addSubMenu(SpreadsheetApp.getUi().createMenu('Turmas')
+        .addItem('Criar Turmas', 'criarTurmas')
+        .addItem('Excluir Turmas', 'excluirTurmas'))
+      .addItem('Consolidar', 'consolidar')
+      .addToUi();
+  }
 // Atualiza a função getLinks na aba Geral
 //   ss.getSheetByName("GERAL").getRange("B7").setValue("");
 //   ss.getSheetByName("GERAL").getRange("B7").setFormula("=ARRAYFORMULA(IFERROR(HYPERLINK(getLinksTurmas();getTurmas());geTurmas()))")
@@ -141,18 +141,10 @@ function consolidar(){
   Browser.msgBox("Consolidar planilha","Planilha consolidada com Sucesso",Browser.Buttons.OK);  
 }
 function foo(){
-// Proteger as abas
-//  for(let i = 0; i < getTurmas.length; i++){
-//    protegerAba(getTurmas[i].getName, ['A9:F58','G9:AP58']);
-
- // }
-  let aba = ss.getSheetByName("P1A")
-  sobreporDados(aba, ['A9:F58','G9:AP58']);
+ console.log(getProfessores())
 }
 function sobreporDados(aba, range = []){
   for(let i = 0; i < range.length; i++){
-    console.log(aba.getName() + " ok")
-    console.log(aba.getRange(range[i]).getValues())
     let dados = aba.getRange(range[i]).getValues();
     aba.getRange(range[i]).setValues(dados);
     dados = []
@@ -224,7 +216,7 @@ function getEditores(){
   let sheet = ss.getSheetByName("Aux");
   let turmas = getTurmas().length;
   for (let i = 0; i < turmas; i++){
-    let aux = sheet.getRange((i+3),5).getValue();
+    let aux = sheeta.getRange((i+3),5).getValue();
     if (aux != ""){
       edit.push(aux);
     }
