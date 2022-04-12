@@ -31,7 +31,7 @@ function replicar(){
       // GERAL
     try{
       turma.getSheetByName("GERAL").getRange("B2").setValue([turmas[i][2]]); // TURMA
-      turma.getSheetByName("GERAL").getRange("M5").setValue(turmas[i][3].slice(3,4));
+      turma.getSheetByName("GERAL").getRange("M5").setValue(turmas[i][3].slice(2,4));
     }catch{}
 
     // Compartilhar
@@ -57,10 +57,10 @@ function replica(codTurma, idModelo, ano) {
     // Tentando Acessar a pasta da escola do ano letivo, em caso de erro cria a pasta.
     // fSchool = Pasta da escola
     try {
-      var fSchool = folder.getFoldersByName(codTurma.slice(3,4));
+      var fSchool = folder.getFoldersByName(codTurma.slice(2,4));
       fSchool = fSchool.next();
     }catch {
-      var fSchool = folder.createFolder(codTurma.slice(3,4));
+      var fSchool = folder.createFolder(codTurma.slice(2,4));
     }finally{
       var arquivo;
       try{
@@ -93,7 +93,6 @@ function replica(codTurma, idModelo, ano) {
     }*/
   }
 }
-
 function listaTurmas(){
 //lista de turmas retirada da lista piloto "1wAdZGhlcmBoSZuccw4Ap0oOX88CUue-bYqtlEZLzckE"
   let t = SpreadsheetApp.openById("1wAdZGhlcmBoSZuccw4Ap0oOX88CUue-bYqtlEZLzckE").getSheetByName("T_Link").getRange("B2:N500").getValues();
