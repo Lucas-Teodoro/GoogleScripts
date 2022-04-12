@@ -18,16 +18,22 @@ function replicar(){
     turma.getSheetByName("DBt").getRange("E3").setValue([turmas[i][4]]); // Reg Professor
     turma.getSheetByName("DBt").getRange("E9").setValue([turmas[i][3]]); // COD TURMA
     turma.getSheetByName("DBt").getRange("E7").setValue([turmas[i][0]]); // Lista Piloto
-    // ID
+      // ID
     try{
       turma.getSheetByName("ID").getRange("B6").setValue([turmas[i][5]]); // Nome Professor
       turma.getSheetByName("ID").getRange("B7").setValue([turmas[i][4]]); // Reg Professor
       turma.getSheetByName("ID").getRange("B11").setValue([turmas[i][3]]); // COD TURMA
       turma.getSheetByName("ID").getRange("B8").setValue([turmas[i][6]]); // EMAIL Professor
       turma.getSheetByName("ID").getRange("B10").setValue([turmas[i][1]]); // SED
-      turma.getSheetByName("ID").getRange("B6").setValue([turmas[i][0]]); // LISTA PILOTO
+      turma.getSheetByName("ID").getRange("B4").setValue([turmas[i][0]]); // LISTA PILOTO
       turma.getSheetByName("ID").getRange("B9").setValue([turmas[i][2]]); // TURMA
     }catch{}
+      // GERAL
+    try{
+      turma.getSheetByName("GERAL").getRange("B2").setValue([turmas[i][2]]); // TURMA
+      turma.getSheetByName("GERAL").getRange("M5").setValue(turmas[i][3].slice(3,4));
+    }catch{}
+
     // Compartilhar
     try{turma.addEditors([turmas[i][6]]);}catch{} // Email Professor 1
     try{turma.addEditors([turmas[i][9]]);}catch{} // Email Professor 2
